@@ -174,11 +174,11 @@ AirBreak.process = function (localPlayer)
 
     if (Utils.isParkourMode())
     {
+        physicsComponent.body.movable = false;
         physicsComponent.body.state.position.x = airBreak.position.x;
         physicsComponent.body.state.position.y = airBreak.position.y;
     }
 
-    physicsComponent.body.movable = false;
     physicsComponent.body.state.position.z = airBreak.position.z;
 
     physicsComponent.body.state.velocity.x = airBreak.velocity.x;
