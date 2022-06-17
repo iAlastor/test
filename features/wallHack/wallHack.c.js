@@ -57,13 +57,27 @@ WallHack.process = function (localPlayer)
         {
             if ((localPlayer.at(0).team_1h5i78$_0.name$ != 
             bodies.at(i).data.components_0.array.at(0).team_1h5i78$_0.name$) ||
-            localPlayer.at(0).team_1h5i78$_0.name$ == "NONE")
+            localPlayer.at(0).team_1h5i78$_0.name$ == "NONE" && 
+            localPlayer != bodies.at(i).data.components_0.array)
             {
                 let color = colorEnemy;
-    
-                if (bodies.at(i).data.components_0.array.at(4).userId == targetId)
+
+                let idComponent = bodies.at(i).data.components_0.array;
+
+                for (let i = 0; i < idComponent.length; i++)
                 {
-                    color = colorTarget;
+                    if (idComponent.at(i).hasOwnProperty("userId_dt4r72$_0"))
+                    {
+                        idComponent = idComponent.at(i);
+                    }
+                }
+
+                if (idComponent && idComponent.hasOwnProperty("userId_dt4r72$_0"))
+                {
+                    if (idComponent.userId_dt4r72$_0 == targetId)
+                    {
+                        color = colorTarget;
+                    }
                 }
     
                 drawEsp(bodies.at(i).data.components_0.array, color);

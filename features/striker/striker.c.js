@@ -35,16 +35,24 @@ Striker.init = function (localPlayer)
 
     let targetingSectorsCalculator = targetingSystem.directionCalculator_0.targetingSectorsCalculator_0;
 
-    targetingSectorsCalculator.maxElevationAngle_0 = 100000;
-    targetingSectorsCalculator.minElevationAngle_0 = -100000;
+    if (targetingSectorsCalculator)
+    {
+        targetingSectorsCalculator.maxElevationAngle_0 = 100000;
+        targetingSectorsCalculator.minElevationAngle_0 = -100000;
+    }
 
     salvoRocketsCount = striker.salvoRocketsCount;
 
     striker.__proto__.lockTarget_gcez93$ = function (t, e, n)
     {
+        if (e != null && e != localPlayer.at(4).userId)
+        {
+            targetId = e;
+        }
+        
         striker.stopAiming();
+        t.targetId = localPlayer.at(4).userId;
         this.lockTarget_gcez93$$default(t, e);
-        targetId = t.targetId;
         return true;
     }
 
@@ -79,9 +87,11 @@ Striker.process = function (localPlayer)
         return;
     }
 
+    striker.stopAiming();
+
     if (KeyPressing.isKeyPressed(82 /*key: R*/) && Utils.isNotOpenChat())
     {
-        striker.explodeRockets();
+        state = true;
     }
 
     if (shellCache)
@@ -99,12 +109,25 @@ Striker.process = function (localPlayer)
 
             for (let i = 0; i < bodies.length; i++)
             {
-                if (bodies.at(i).data.components_0.array.at(4).userId == targetId)
+                let idComponent = bodies.at(i).data.components_0.array;
+
+                for (let i = 0; i < idComponent.length; i++)
                 {
-                    if (bodies.at(i).state.position)
+                    if (idComponent.at(i).hasOwnProperty("userId_dt4r72$_0"))
                     {
-                        targetPos = bodies.at(i).state.position;
-                        break;
+                        idComponent = idComponent.at(i);
+                    }
+                }
+
+                if (idComponent && idComponent.hasOwnProperty("userId_dt4r72$_0"))
+                {
+                    if (idComponent.userId_dt4r72$_0 == targetId)
+                    {
+                        if (bodies.at(i).state.position)
+                        {
+                            targetPos = bodies.at(i).state.position;
+                            break;
+                        }
                     }
                 }
             }

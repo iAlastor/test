@@ -7,14 +7,28 @@ GameObjects.getWorld = function ()
         return gameObjects.world;
     }  
 
-    let localPlayer = this.getLocalPlayer();
+    let rootObject = Utils.getRootObject();
 
-    if (!localPlayer)
+    if (!rootObject)
     {
-        return null;    
+        return null;
+    }  
+    
+    let subs = rootObject.store.subscribers.toArray();
+
+    if (!subs)
+    {
+        return null;
     }
 
-    return gameObjects.world = localPlayer.at(0).world;
+    let world = subs.find(element => element["tank"] != null && element["tank"].hasOwnProperty("world"));
+
+    if (!world)
+    {
+        return null;
+    }
+
+    return gameObjects.world = world.tank.world;
 }
 
 GameObjects.getGameActions = function ()
@@ -58,31 +72,28 @@ GameObjects.getLocalPlayer = function ()
         return gameObjects.localPlayer;
     }
 
-    let rootObject = Utils.getRootObject();
+    let world = this.getWorld();
 
-    if (!rootObject)
+    if (!world)
     {
-        console.log("!rootObject");
         return null;
-    }  
-    
-    let subs = rootObject.store.subscribers.array_hd7ov6$_0;
+    }
 
-    if (!subs)
+    let bodies = world.physicsScene_0.bodies_0.toArray();
+
+    if (bodies.length == 0)
     {
-        console.log("!subs");
         return null;
-    }  
-    
-    for (let i = 0; i < subs.length; i++)
+    }
+
+    let localPlayer = bodies.find(element => element.data.isPossessed == true);
+
+    if (!localPlayer)
     {
-        if (subs.at(i).hasOwnProperty("tank"))
-        {
-            return gameObjects.localPlayer = subs.at(i).tank.components_0.array;
-        }
+        return null;
     }
     
-    return null;
+    return gameObjects.localPlayer = localPlayer.data.components_0.array;
 }
 
 GameObjects.getPhysicsComponent = function ()
@@ -102,7 +113,9 @@ GameObjects.getPhysicsComponent = function ()
     for (let i = 0; i < localPlayer.length; i++)
     {
         if (localPlayer.at(i).hasOwnProperty("tankPhysicsComponent_tczrao$_0"))
+        {
             return gameObjects.physicsComponent = localPlayer.at(i).tankPhysicsComponent_tczrao$_0;
+        }
     }
 
     return null;
@@ -143,7 +156,9 @@ GameObjects.getCamera = function ()
     for (let i = 0; i < localPlayer.length; i++)
     {
         if (localPlayer.at(i).hasOwnProperty("followCamera_w8ai3w$_0"))
+        {
             return gameObjects.camera = localPlayer.at(i).followCamera_0.currState_0;
+        }
     }
 
     return null; 
@@ -166,7 +181,9 @@ GameObjects.getStrikerComponent = function ()
     for (let i = 0; i < localPlayer.length; i++)
     {
         if (localPlayer.at(i).hasOwnProperty("strikerWeapon_jjsiik$_0"))
+        {
             return gameObjects.strikerComponent = localPlayer.at(i).strikerWeapon_jjsiik$_0;
+        }
     }
 
     return null;

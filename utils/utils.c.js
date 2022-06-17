@@ -85,14 +85,35 @@ Utils.isGameReady = function ()
     let renderElement = this.getRenderElement();
 
     if (!renderElement)
+    {
         return false;
+    }
 
     let rootObject = this.getRootObject();
 
     if (!rootObject)
+    {
         return false;
+    } 
 
-    return rootObject.store.state.battleStatistics.battleLoaded;
+    if (!rootObject.store.state.battleStatistics.battleLoaded)
+    {
+        return false;
+    }
+
+    let localPlayer = GameObjects.getLocalPlayer();
+
+    if (!localPlayer)
+    {
+        return false;
+    }
+
+    if (localPlayer.length == 0)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 Utils.errorLog = function (text)

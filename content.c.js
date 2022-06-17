@@ -49,10 +49,12 @@ function mainEvent()
                 
             Striker.init(localPlayer);
 
-            localPlayer.at(0).entity.unpossess = function () 
+            if (localPlayer)
             {
-                this.isPossessed = !1;
-                reset();
+                localPlayer.at(37).runAfterPhysicsUpdate_mx4ult$ = function(t) 
+                {
+                    this.sendState_0(this.tankPhysicsComponent_0.getInterpolatedBodyState());
+                }
             }
         }
         else if (init && !Utils.isGameReady())
@@ -63,11 +65,6 @@ function mainEvent()
         if (init)
         {
             let localPlayer = GameObjects.getLocalPlayer();
-
-            if (localPlayer)
-            {
-                localPlayer.at(37).needImmediateUpdate_0 = true;
-            }
 
             // process functions
             AirBreak.process(localPlayer);

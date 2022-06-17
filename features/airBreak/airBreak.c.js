@@ -8,14 +8,6 @@ document.addEventListener('keyup', (e) =>
     }
 })
 
-document.addEventListener('keyup', (e) => 
-{
-    if (e.keyCode == 74 && Utils.isGameReady() && Utils.isNotOpenChat())
-    {
-        airBreak.antiAim = !airBreak.antiAim;
-    }
-})
-
 AirBreak.process = function (localPlayer)
 {
     if (!localPlayer)
@@ -44,13 +36,6 @@ AirBreak.process = function (localPlayer)
         return;
     }
 
-    let bodies = world.physicsScene_0.bodies_0.array_hd7ov6$_0;
-
-    if (!bodies)
-    {
-        return;
-    }
-
     if (airBreak.isShiftPressed)
     {
         airBreak.isShiftPressed = false;
@@ -69,6 +54,7 @@ AirBreak.process = function (localPlayer)
         }
         else
         {
+            physicsComponent.body.movable = true;
             physicsComponent.body.state.velocity.x = 0;
             physicsComponent.body.state.velocity.y = 0;
             physicsComponent.body.state.velocity.z = 0;
@@ -76,16 +62,13 @@ AirBreak.process = function (localPlayer)
             physicsComponent.body.state.angularVelocity.x = 0;
             physicsComponent.body.state.angularVelocity.y = 0;
             physicsComponent.body.state.angularVelocity.z = 0;
-        
-            for (let i = 0; i < bodies.length; i++) 
-            {
-                bodies.at(i).movable = true;
-            }
         }
     }
 
     if (!airBreak.state)
+    {
         return;
+    }
 
     let direction = camera.direction;
 
@@ -191,30 +174,15 @@ AirBreak.process = function (localPlayer)
 
     if (Utils.isParkourMode())
     {
-        for (let i = 0; i < bodies.length; i++) 
-        {
-            bodies.at(i).movable = false;
-        }
-
-        if (airBreak.antiAim)
-        {
-            let bounds = world.entities_0.array_hd7ov6$_0.at(0).components_0.array.at(0).bounds;
-
-            physicsComponent.interpolatedPosition.x = Utils.getRandomArbitrary(bounds.minX, bounds.maxX);
-            physicsComponent.interpolatedPosition.y = Utils.getRandomArbitrary(bounds.minY, bounds.maxY);
-            physicsComponent.interpolatedPosition.z = Utils.getRandomArbitrary(bounds.maxZ + 500, bounds.maxZ + 500);
-        }
-
         physicsComponent.body.state.position.x = airBreak.position.x;
         physicsComponent.body.state.position.y = airBreak.position.y;
     }
-    else
-    {
-        physicsComponent.body.state.velocity.x = airBreak.velocity.x;
-        physicsComponent.body.state.velocity.y = airBreak.velocity.y;
-    }
 
+    physicsComponent.body.movable = false;
     physicsComponent.body.state.position.z = airBreak.position.z;
+
+    physicsComponent.body.state.velocity.x = airBreak.velocity.x;
+    physicsComponent.body.state.velocity.y = airBreak.velocity.y;
     physicsComponent.body.state.velocity.z = airBreak.velocity.z;
 
     physicsComponent.body.state.orientation.w = Math.sin(-(camera.direction - Math.PI) / 2);
